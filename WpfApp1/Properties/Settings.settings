@@ -1,0 +1,36 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WpfApp1.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Name" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="InTime" Type="System.String" Scope="User">
+      <Value Profile="(Default)">9:30</Value>
+    </Setting>
+    <Setting Name="LaterTime" Type="System.String" Scope="User">
+      <Value Profile="(Default)">9:40</Value>
+    </Setting>
+    <Setting Name="NoneTime" Type="System.String" Scope="User">
+      <Value Profile="(Default)">10:00</Value>
+    </Setting>
+    <Setting Name="OutTime" Type="System.String" Scope="User">
+      <Value Profile="(Default)">18:00</Value>
+    </Setting>
+    <Setting Name="EmptyType" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="LaterType" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="NoneType" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="TimeTypes" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0:0,9:00,0,true|9:00,9:40,1,true</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -1,5 +1,6 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
+﻿bin/
+.vs/
+obj/
 
-/WpfApp1/bin
+*.lnk
+*.zip
