@@ -87,12 +87,7 @@ namespace WpfApp1 {
         public static async Task<Log> getLogAsync ( DateTime _date ) {
             if (!isLogin)
                 return null;
-
-            // 是否是今天
-            if (_date.DayOfYear == DateTime.Now.DayOfYear) {
-                return await getTodayAsync ();
-            }
-
+            
             string date = _date.ToString ("yyyyMMdd");
 
             var log = new Log ();
@@ -110,6 +105,7 @@ namespace WpfApp1 {
             };
             var ret = await web.GetJsonAsync (server_url, content);
 
+            log.time = _date;
             log.date = _date.ToString ("yy年M月d日");
             log.week_code = (int)_date.DayOfWeek;
             log.week = week_arr[log.week_code];
@@ -122,16 +118,22 @@ namespace WpfApp1 {
                     log.time_out = cd.Get<string> ("time_out");
                 }
             }
+            else {
+                // 尝试第二种方法
+                return await getLogAsync2(_date);
+            }
 
             return log;
         }
 
-        // 今天单独处理
+        static TimeSpan aftern = new TimeSpan(15, 0, 0);
+
+        // 获取数据第二种方法
         // https://s9.zkcserv.com/cb_hrms/index.cfm?event=ionicAction.ionicAction.getAtSignInData&_user_name=&_pass_word=&_is_login=1&_notification_token=&_device_type=ios&current_date=20180809&time_zone=+08:00
-        public static async Task<Log> getTodayAsync () {
+        public static async Task<Log> getLogAsync2 (DateTime _date) {
             if (!isLogin)
                 return null;
-            string date = DateTime.Now.ToString ("yyyyMMdd");
+            string date = _date.ToString ("yyyyMMdd");
 
             var log = new Log ();
 
@@ -147,21 +149,30 @@ namespace WpfApp1 {
                 new KeyValuePair<string, string>("time_zone", "+08:00"),
             };
             var ret = await web.GetJsonAsync (server_url, content);
-            if (ret == null)
-                return null;
 
-            log.date = DateTime.Now.ToString ("yy年M月d日");
-            log.week_code = (int)DateTime.Now.DayOfWeek;
+
+            log.time = _date;
+            log.date = _date.ToString ("yy年M月d日");
+            log.week_code = (int)_date.DayOfWeek;
             log.week = week_arr[log.week_code];
-            var cards = ret.Get<List<object>> ("ca_r");
-            // 取第一次
-            if (cards.Count > 0) {
-                log.time_in = (cards[0] as Dictionary<string, object>).Get<string> ("ti");
-            }
 
-            // 取最后一次
-            if (cards.Count > 1) {
-                log.time_out = (cards[cards.Count - 1] as Dictionary<string, object>).Get<string> ("ti");
+            if(ret != null) {
+                var cards = ret.Get<List<object>>("ca_r");
+                // 只有一次
+                if (cards.Count > 0) {
+                    var tm = (cards[0] as Dictionary<string, object>).Get<string>("ti");
+                    TimeSpan d;
+                    TimeSpan.TryParse(tm, out d);
+                    if (d > aftern)
+                        log.time_out = tm;
+                    else
+                        log.time_in = tm;
+                }
+
+                // 取最后一次
+                if (cards.Count > 1) {
+                    log.time_out = (cards[cards.Count - 1] as Dictionary<string, object>).Get<string>("ti");
+                }
             }
 
             return log;
@@ -184,6 +195,10 @@ namespace WpfApp1 {
         public int week_code { get; set; }
         public TimeType type_in { get; set; }
         public TimeType type_out { get; set; }
+
+        public DateTime time { get; set; }
+        public string color_in { get; set; }
+        public string color_out { get; set; }
 
         public override string ToString () { return date + " " + week + ":" + time_in + "  " + time_out; }
     }

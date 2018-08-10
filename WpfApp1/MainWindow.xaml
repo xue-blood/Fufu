@@ -6,50 +6,11 @@
         xmlns:local="clr-namespace:WpfApp1"
         xmlns:p="clr-namespace:WpfApp1.Properties" 
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="500" MinWidth="500" MaxWidth="500"
+        Title="MainWindow" Height="630" Width="500" MinWidth="500"
         WindowStartupLocation="CenterScreen" 
         Background="#444444"
         Foreground="Azure" 
         FontSize="20" >
-    <Window.Resources>
-        <local:EnumToStringConverter x:Key="EnumToStringConverter"/>
-
-        <Storyboard x:Key="setting_show">
-            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="grid">
-                <EasingThicknessKeyFrame KeyTime="0" Value="0,0,-300,0"/>
-                <EasingThicknessKeyFrame KeyTime="0:0:0.2" Value="0,0,-218,0"/>
-                <EasingThicknessKeyFrame KeyTime="0:0:0.367" Value="0,0,-96,0"/>
-                <EasingThicknessKeyFrame KeyTime="0:0:0.5" Value="0,0,0,0"/>
-            </ThicknessAnimationUsingKeyFrames>
-        </Storyboard>
-        <Storyboard x:Key="setting_hide">
-            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="grid">
-                <EasingThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
-                <EasingThicknessKeyFrame KeyTime="0:0:0.267" Value="0,0,-152,0"/>
-                <EasingThicknessKeyFrame KeyTime="0:0:0.433" Value="0,0,-277,0"/>
-                <EasingThicknessKeyFrame KeyTime="0:0:0.533" Value="0,0,-300,0"/>
-            </ThicknessAnimationUsingKeyFrames>
-        </Storyboard>
-        <Storyboard x:Key="author_show">
-            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="textBlock">
-                <EasingColorKeyFrame KeyTime="0" Value="Transparent"/>
-                <EasingColorKeyFrame KeyTime="0:0:9" Value="Transparent"/>
-                <EasingColorKeyFrame KeyTime="0:0:9.3" Value="Cyan"/>
-            </ColorAnimationUsingKeyFrames>
-        </Storyboard>
-    </Window.Resources>
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="button">
-            <BeginStoryboard x:Name="setting_show_BeginStoryboard" Storyboard="{StaticResource setting_show}"/>
-            <BeginStoryboard x:Name="author_show_BeginStoryboard" Storyboard="{StaticResource author_show}"/>
-        </EventTrigger>
-        <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="button1">
-            <BeginStoryboard x:Name="setting_hide_BeginStoryboard" Storyboard="{StaticResource setting_hide}"/>
-        </EventTrigger>
-        <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="button2">
-            <BeginStoryboard x:Name="setting_hide_BeginStoryboard1" Storyboard="{StaticResource setting_hide}"/>
-        </EventTrigger>
-    </Window.Triggers>
 
     <Window.DataContext>
         <local:MainViewModel/>
@@ -78,7 +39,7 @@
             <DockPanel Grid.Row="1">
                 <Button Content="获取本月考勤" Height="36" Command="{Binding GetLogCmd}" BorderBrush="DarkCyan" Margin="5" Background="#555555" Foreground="Azure"/>
                 <DatePicker Height="25" FontSize="15" SelectedDate="{Binding SelectDate,Mode=OneWayToSource}" HorizontalAlignment="Left" Margin="5" BorderThickness="0" VerticalAlignment="Center" Width="115" Focusable="False"/>
-                <Button x:Name="button" Content="设置" Height="36" Width="50" FontSize="15" BorderBrush="DarkGoldenrod" Margin="5" Background="#555555" Foreground="Azure"/>
+                <Button x:Name="button" Content="设置" Command="{Binding SettingCmd}" Height="36" Width="50" FontSize="15" BorderBrush="DarkGoldenrod" Margin="5" Background="#555555" Foreground="Azure"/>
             </DockPanel>
 
         </Grid>
@@ -87,7 +48,7 @@
 
         <DataGrid Grid.Row="1" RowBackground="#454545" AlternatingRowBackground="#545454" BorderBrush="{x:Null}" Foreground="Azure" ItemsSource="{Binding Logs}"
                   AutoGenerateColumns="False" HeadersVisibility="Column" HorizontalScrollBarVisibility="Hidden"
-                  IsReadOnly="True" CanUserSortColumns="False" CanUserResizeColumns="False" CanUserReorderColumns="False">
+                  IsReadOnly="True" CanUserSortColumns="False" CanUserResizeColumns="True" CanUserReorderColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="日期" Width="Auto" MinWidth="165" Binding="{Binding Path=date, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="星期" Width="Auto" MinWidth="100" Binding="{Binding Path=week, UpdateSourceTrigger=PropertyChanged}"/>
@@ -128,7 +89,7 @@
                                 <Condition Binding="{Binding type_in, UpdateSourceTrigger=PropertyChanged}" Value="1"/>
                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},Path=Column.DisplayIndex}" Value="2"/>
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Background" Value="Firebrick"/>
+                            <Setter Property="Background" Value="{Binding color_in}"/>
                         </MultiDataTrigger>
 
                         <MultiDataTrigger>
@@ -145,7 +106,7 @@
                                 <Condition Binding="{Binding type_out, UpdateSourceTrigger=PropertyChanged}" Value="1"/>
                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},Path=Column.DisplayIndex}" Value="3"/>
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Background" Value="DarkGoldenrod"/>
+                            <Setter Property="Background" Value="{Binding color_out}"/>
                         </MultiDataTrigger>
 
                         <MultiDataTrigger>
@@ -170,46 +131,5 @@
             <TextBlock Text="{Binding Ratio}"/>
             <TextBlock Text="%)"/>
         </StackPanel>
-
-        <Grid x:Name="grid" Grid.RowSpan="3" HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="#444444" MinWidth="210" MaxWidth="210" Panel.ZIndex="3" Margin="0,0,-210,0">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="50"/>
-                </Grid.RowDefinitions>
-
-                <DockPanel Grid.Row="0">
-                    <Button x:Name="button1" Content="返回" Height="36" Width="50" FontSize="15" Command="{Binding SettingCloseCmd}" BorderBrush="DarkGoldenrod" Margin="5" Background="#555555" Foreground="Azure"/>
-                    <Button x:Name="button2" Content="清除帐号" Height="36" Width="80" FontSize="15" Command="{Binding ClearCmd}" BorderBrush="DarkMagenta" Margin="5" Background="#555555" Foreground="Azure"/>
-                </DockPanel>
-
-                <Grid Grid.Row="1" Margin="5">
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-
-                    <ItemsControl ItemsSource="{Binding TimeTypes}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="3">
-                                    <TextBlock Text="{Binding}"/>
-                                    <ComboBox ItemsSource="{local:Enumerate {x:Type local:TimeType}}" SelectedItem="{Binding type,Mode=TwoWay , Converter={StaticResource EnumToStringConverter}}" FontSize="15" Width="80" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Grid>
-
-                <StackPanel Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4 2">
-                    <TextBlock x:Name="textBlock" Foreground="Cyan" Text="{x:Static p:Resources.Author}" FontSize="12"/>
-                    <TextBlock Text="{x:Static p:Resources.Version}" FontSize="18" Margin="2"/>
-                </StackPanel>
-            </Grid>
-        </Grid>
     </Grid>
 </Window>

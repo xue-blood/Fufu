@@ -133,7 +133,9 @@ namespace WpfApp1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0:0,9:00,0,true|9:00,9:40,1,true")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0:00,0:00,2,True,Firebrick|0:00,9:30,0,True,ForestGreen|9:30,9:40,1,True,Sienna|9" +
+            ":40,10:00,1,True,Firebrick|10:00,18:00,2,True,Firebrick|18:00,22:00,0,False,Gree" +
+            "n|22:00,0:00,0,False,Green|0:00,0:00,2,False,DarkGoldenrod")]
         public string TimeTypes {
             get {
                 return ((string)(this["TimeTypes"]));

@@ -7,80 +7,75 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace WpfApp1 {
-    public class MainViewModel : ViewModel, IDisposable {
-        public string Name { get { return name; } set { name = value; RaisePropertyChanged (); } }
+    public class MainViewModel : ViewModel {
+        public string Name { get { return name; } set { name = value; RaisePropertyChanged(); Fufu.logout(); } }
         private string name;
 
-        public string Password { get { return password; } set { password = value; RaisePropertyChanged (); } }
+        public string Password { get { return password; } set { password = value; RaisePropertyChanged(); Fufu.logout(); } }
         private string password;
 
-        public ObservableCollection<Log> Logs { get { return logs; } set { logs = value; RaisePropertyChanged (); } }
-        private ObservableCollection<Log> logs = new ObservableCollection<Log> ();
+        public ObservableCollection<Log> Logs { get { return logs; } set { logs = value; RaisePropertyChanged(); } }
+        private ObservableCollection<Log> logs = new ObservableCollection<Log>();
 
-        public Command GetLogCmd { get { return getLogCmd ?? (getLogCmd = new Command { CanExecuteDelegate = _ => !inwork, ExecuteDelegate = async _ => await getThisMouthAsync () }); } }
+        public Command GetLogCmd { get { return getLogCmd ?? (getLogCmd = new Command { CanExecuteDelegate = _ => !inwork, ExecuteDelegate = async _ => await getThisMouthAsync() }); } }
         private Command getLogCmd;
 
-        public Command ClearCmd { get { return clearCmd ?? (clearCmd = new Command { ExecuteDelegate = _ => ClearAccount () }); } }
-        private Command clearCmd;
+        public Command SettingCmd { get { return settingCmd ?? (settingCmd = new Command { CanExecuteDelegate = _ => Get<SettingViewModel>() == null, ExecuteDelegate = _ => new Setting().Show() }); } }
+        private Command settingCmd;
 
-        public Command SettingCloseCmd { get { return settingCloseCmd ?? (settingCloseCmd = new Command { ExecuteDelegate = _ => updateLogs () }); } }
-        private Command settingCloseCmd;
 
-        public DateTime SelectDate { get { return selectDate; } set { selectDate = value; RaisePropertyChanged (); getSelectLogAsync (); } }
+        public DateTime SelectDate { get { return selectDate; } set { selectDate = value; RaisePropertyChanged(); getSelectLogAsync(); } }
         private DateTime selectDate = DateTime.Now;
 
-        public int TotalDay { get { return totalDay; } set { totalDay = value; RaisePropertyChanged (); } }
+        public int TotalDay { get { return totalDay; } set { totalDay = value; RaisePropertyChanged(); } }
         private int totalDay;
 
-        public int FinishDay { get { return finishDay; } set { finishDay = value; RaisePropertyChanged (); } }
+        public int FinishDay { get { return finishDay; } set { finishDay = value; RaisePropertyChanged(); } }
         private int finishDay;
 
-        public float Ratio { get { return ration; } set { ration = value; RaisePropertyChanged (); } }
+        public float Ratio { get { return ration; } set { ration = value; RaisePropertyChanged(); } }
         private float ration = 100;
-
-        public ObservableCollection<TimeData> TimeTypes { get { return Config.timeTypes; } set { Config.timeTypes = value; RaisePropertyChanged (); } }
-
-        public IEnumerable<TimeType> TypeList { get { return Enum.GetValues (typeof (TimeType)).Cast<TimeType> (); } }
 
 
         bool inwork = false;
-        async Task getThisMouthAsync () {
-            await getLogAsync (DateTime.Now);
+        async Task getThisMouthAsync() {
+            await getLogAsync(DateTime.Now);
         }
 
-        ITimeFilter[] filters = new[] {
-            new TimeFilter ()
+        ITimeFilter[] filters = new ITimeFilter[] {
+            new TimeFilter (),
+            new TodayFilter()
         };
 
-        async Task getLogAsync ( DateTime date ) {
-            if (string.IsNullOrEmpty (Name) || string.IsNullOrEmpty (Password))
+        async Task getLogAsync(DateTime date) {
+            if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Password))
                 return;
 
             if (inwork) { return; }
 
             try {
                 inwork = true;
-                if (!await Fufu.loginAsync (Name, Password))
+                if (!await Fufu.loginAsync(Name, Password))
                     goto _end_;
 
                 TotalDay = 0;
                 FinishDay = 0;
-                Logs.Clear ();
+                Logs.Clear();
                 for (int i = date.Day; i > 0; i--) {
-                    var d = new DateTime (date.Year, date.Month, i);
-                    var log = await Fufu.getLogAsync (d);
+                    var d = new DateTime(date.Year, date.Month, i);
+                    var log = await Fufu.getLogAsync(d);
                     if (log == null)
                         continue;
 
-                    Logs.Add (log);
+                    Logs.Add(log);
 
                     // 数据处理
                     foreach (var f in filters) {
-                        f.Filter (log);
+                        f.Filter(log);
                     }
 
                     // 统计
-                    if (log.week_code != 0 && log.week_code != 6 && !d.IsNowDay ()) {
+                    if (log.week_code != 0 && log.week_code != 6 && !d.IsNowDay()) {
                         TotalDay++;
                         FinishDay += (log.type_in == TimeType.Normal && log.type_out == TimeType.Normal) ? 1 : 0;
                     }
@@ -89,82 +84,83 @@ namespace WpfApp1 {
                 Ratio *= 100;
             }
             catch (Exception _e) {
-                MessageBox.Show (_e.Message);
+                MessageBox.Show(_e.Message);
                 inwork = false;
             }
 
-            _end_:
+_end_:
             inwork = false;
         }
 
-        async Task getSelectLogAsync () {
+        async Task getSelectLogAsync() {
             if (SelectDate.Year == DateTime.Now.Year && SelectDate.Month >= DateTime.Now.Month) {
-                await getLogAsync (DateTime.Now);
+                await getLogAsync(DateTime.Now);
             }
             else {
-                var date = new DateTime (SelectDate.Year, SelectDate.Month, DateTime.DaysInMonth (SelectDate.Year, SelectDate.Month));
-                await getLogAsync (date);
+                var date = new DateTime(SelectDate.Year, SelectDate.Month, DateTime.DaysInMonth(SelectDate.Year, SelectDate.Month));
+                await getLogAsync(date);
             }
         }
 
-        public MainViewModel () {
+        public MainViewModel() {
             Name = Properties.Settings.Default.Name;
-            Password = Security.Decrypt (Properties.Settings.Default.Password, "p@ssw0rd");
+            Password = Security.Decrypt(Properties.Settings.Default.Password, "p@ssw0rd");
 
-            var cfg = Properties.Settings.Default.TimeTypes.Split ('|');
+            var cfg = Properties.Settings.Default.TimeTypes.Split('|');
             foreach (var s in cfg) {
-                var d = new TimeData ();
-                if (d.Parse (s))
-                    TimeTypes.Add (d);
+                var d = new TimeData();
+                if (d.Parse(s))
+                    Config.timeTypes.Add(d);
             }
 
-            if (!string.IsNullOrEmpty (Name) && !string.IsNullOrEmpty (Password)) {
-                getLogAsync (DateTime.Now);
+            Config.onConfigUpdated += updateLogs;
+            Config.onDataClear += ClearAccount;
+
+            if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Password)) {
+                getLogAsync(DateTime.Now);
             }
         }
 
-        void ClearAccount () {
+        void ClearAccount() {
             Name = Properties.Settings.Default.Name = "";
             Password = Properties.Settings.Default.Password = "";
 
-            Properties.Settings.Default.Save ();
+            Properties.Settings.Default.Save();
 
-            Fufu.logout ();
-            Logs.Clear ();
+            Fufu.logout();
+            Logs.Clear();
         }
 
-        void updateLogs () {
-            for (int i = 0; i<Logs.Count; i++) {
+        void updateLogs() {
+            for (int i = 0; i < Logs.Count; i++) {
                 // 移除后重新添加才会刷新
                 var ls = Logs[i];
-                Logs.RemoveAt (i);
+                Logs.RemoveAt(i);
                 foreach (var f in filters)
-                    f.Filter (ls);
-                Logs.Insert (i, ls);
+                    f.Filter(ls);
+                Logs.Insert(i, ls);
             }
-
-
         }
 
-        public void Dispose () {
-
+        public override void Dispose() {
+            base.Dispose();
             Properties.Settings.Default.Name = Name;
-            Properties.Settings.Default.Password = Security.Encrypt (Password, "p@ssw0rd");
+            Properties.Settings.Default.Password = Security.Encrypt(Password, "p@ssw0rd");
 
-            var sbd = new StringBuilder ();
-            for (int i = 0; i<TimeTypes.Count (); i++) {
-                sbd.Append (TimeTypes[i].UnParse () + "|");
+            var sbd = new StringBuilder();
+            for (int i = 0; i < Config.timeTypes.Count(); i++) {
+                sbd.Append(Config.timeTypes[i].UnParse() + "|");
             }
-            Properties.Settings.Default.TimeTypes = sbd.Length > 1 ? sbd.ToString (0, sbd.Length -1) : "";
+            Properties.Settings.Default.TimeTypes = sbd.Length > 1 ? sbd.ToString(0, sbd.Length - 1) : "";
 
-            Properties.Settings.Default.Save ();
+            Properties.Settings.Default.Save();
 
             foreach (var f in filters) {
                 if (f is IDisposable)
-                    (f as IDisposable).Dispose ();
+                    (f as IDisposable).Dispose();
             }
 
-            Fufu.logout ();
+            Fufu.logout();
         }
     }
 

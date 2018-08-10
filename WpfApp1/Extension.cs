@@ -13,6 +13,7 @@ namespace WpfApp1 {
     public static class Extension {
 
         public static async Task<Dictionary<string, object>> PostJsonAsync ( this HttpClient web, string url, IEnumerable<KeyValuePair<string, string>> keys ) {
+            Debug.Print(url + keys.ToUrl());
             Dictionary<string, object> json = null;
             var res = await web.PostAsync (url, new FormUrlEncodedContent (keys));
             using (var reader = new StreamReader (await res.Content.ReadAsStreamAsync ())) {
@@ -29,6 +30,7 @@ namespace WpfApp1 {
         public static async Task<Dictionary<string, object>> GetJsonAsync ( this HttpClient web, string url, IEnumerable<KeyValuePair<string, string>> keys ) {
             Dictionary<string, object> json = null;
 
+            Debug.Print(url + keys.ToUrl());
             var res = await web.GetAsync (url + keys.ToUrl ());
             using (var reader = new StreamReader (await res.Content.ReadAsStreamAsync ())) {
                 var raw = await reader.ReadToEndAsync ();
