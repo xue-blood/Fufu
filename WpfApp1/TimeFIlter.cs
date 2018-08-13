@@ -14,11 +14,11 @@ namespace WpfApp1 {
         public void Filter ( Log log ) {
             // 过滤今天的，没打卡强制显示
             if (log.time.IsNowDay ()) {
-                if (string.IsNullOrEmpty(log.time_in)) {
+                if (string.IsNullOrEmpty (log.time_in)) {
                     log.type_in = TimeType.Color;
                     log.color_in = "Firebrick";
                 }
-                if (string.IsNullOrEmpty(log.time_out)) {
+                if (string.IsNullOrEmpty (log.time_out)) {
                     log.type_out = TimeType.Color;
                     log.color_in = "DarkGoldenrod";
                 }
@@ -40,28 +40,36 @@ namespace WpfApp1 {
 
                 log.type_in = TimeType.Normal;
                 log.type_out = TimeType.Normal;
-
+                bool adj_in = false;
+                bool adj_out = false;
                 foreach (var d in Config.timeTypes) {
                     if (d.invalid) {
-                        if (log.type_in == TimeType.Normal && string.IsNullOrEmpty (log.time_in) && d.time_in) {
+                        if (!adj_in && string.IsNullOrEmpty (log.time_in) && d.time_in) {
+                            adj_in = true;
                             log.type_in = d.type;
                             log.color_in = d.color;
                         }
-                        if (log.type_out == TimeType.Normal && string.IsNullOrEmpty (log.time_out) && !d.time_in) {
+                        if (!adj_out && string.IsNullOrEmpty (log.time_out) && !d.time_in) {
+                            adj_out = true;
                             log.type_out = d.type;
                             log.color_out = d.color;
                         }
                     }
                     else {
-                        if (log.type_in == TimeType.Normal && d.time_in && ti >= d.start && ti <= d.end) {
+                        if (!adj_in && d.time_in && ti >= d.start && ti <= d.end) {
+                            adj_in = true;
                             log.type_in = d.type;
                             log.color_in = d.color;
                         }
-                        if (log.type_out == TimeType.Normal && !d.time_in && to >= d.start && to <= d.end) {
+                        if (!adj_out && !d.time_in && to >= d.start && to <= d.end) {
+                            adj_out = true;
                             log.type_out = d.type;
                             log.color_out = d.color;
                         }
                     }
+
+                    if (adj_in && adj_out)
+                        break;
                 }
             }
         }
