@@ -30,7 +30,7 @@
 
             <DockPanel>
                 <TextBlock Text="用户名" VerticalAlignment="Center" Margin="10" />
-                <TextBox Text="{Binding Name, Mode=TwoWay}" Height="36" Foreground="Azure" BorderBrush="{x:Null}" MinWidth="150" Margin="5" Background="#555555" TextAlignment="Center" VerticalContentAlignment="Center" />
+                <TextBox Text="{Binding Name, Mode=TwoWay}" Height="36" Foreground="Azure" BorderBrush="{x:Null}" MinWidth="150" Margin="5,9,5,5" Background="#555555" TextAlignment="Center" VerticalContentAlignment="Center" />
 
                 <TextBlock Text="密码" VerticalAlignment="Center" Margin="10"/>
                 <PasswordBox xmlns:p="clr-namespace:PasswordBoxHelp" Height="36" p:PasswordBoxAssistant.BindPassword="True" p:PasswordBoxAssistant.BoundPassword="{Binding Path=Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Azure" BorderBrush="{x:Null}" MinWidth="150" Margin="5" Background="#555555" VerticalContentAlignment="Center" />

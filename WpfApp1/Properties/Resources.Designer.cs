@@ -97,6 +97,21 @@ namespace WpfApp1.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1:开始时间,
+        ///2:结束时间,
+        ///3:类型(0：显示，1：颜色，2:隐藏),
+        ///4:是否上下班(True|False),
+        ///5:备注
+        ///
+        ///每个时间段用 &quot;|&quot; 分割，內部用&apos;,&apos; 分割，可以回车换行.
+        /// </summary>
+        public static string SettingFormat {
+            get {
+                return ResourceManager.GetString("SettingFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  v1.0.
         /// </summary>
         public static string Version {

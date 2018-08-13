@@ -129,6 +129,15 @@
   <data name="Normal" xml:space="preserve">
     <value>正常显示</value>
   </data>
+  <data name="SettingFormat" xml:space="preserve">
+    <value>1:开始时间,
+2:结束时间,
+3:类型(0：显示，1：颜色，2:隐藏),
+4:是否上下班(True|False),
+5:备注
+
+每个时间段用 "|" 分割，內部用',' 分割，可以回车换行</value>
+  </data>
   <data name="Version" xml:space="preserve">
     <value> v1.0</value>
   </data>

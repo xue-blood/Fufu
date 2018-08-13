@@ -6,11 +6,11 @@
         xmlns:local="clr-namespace:WpfApp1"
         xmlns:p="clr-namespace:WpfApp1.Properties" 
         mc:Ignorable="d"
-        Title="Setting" Height="450" Width="450"
+        Title="Setting" Height="600" Width="{Binding SizeX,Mode=TwoWay}"
         WindowStartupLocation="Manual"
         Background="#444444"
         Foreground="Azure" 
-        FontSize="20" >
+        FontSize="20">
 
     <Window.DataContext>
         <local:SettingViewModel/>
@@ -185,7 +185,8 @@
 
     </Window.Resources>
     <Grid>
-        <Grid>
+
+        <Grid Margin="{Binding BasMargin}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
@@ -193,7 +194,9 @@
             </Grid.RowDefinitions>
 
             <DockPanel Grid.Row="0">
-                <Button x:Name="button2" Content="清除帐号" Height="36" Width="80" FontSize="15" Command="{Binding ClearCmd}" BorderBrush="DarkMagenta" Margin="5" Background="#555555" Foreground="Azure"/>
+                <Button Content="高级" Height="36" Width="80" FontSize="15" Command="{Binding AdvCmd}" BorderBrush="DarkMagenta" Margin="5" Background="#555555" Foreground="Azure" DockPanel.Dock="Right"/>
+                <Button Content="清除帐号" Height="36" Width="80" FontSize="15" Command="{Binding ClearCmd}" BorderBrush="DarkMagenta" Margin="5" Background="#555555" Foreground="Azure" />
+                <Button Content="清除帐号" Height="36" Width="80" FontSize="15" Command="{Binding ClearCmd}" BorderBrush="DarkMagenta" Margin="5" Background="#555555" Foreground="Azure" Visibility="Hidden"/>
             </DockPanel>
 
             <Grid Grid.Row="1" Margin="5">
@@ -242,6 +245,34 @@
                     </TextBlock.Triggers>
                 </TextBlock>
                 <TextBlock Text="{x:Static p:Resources.Version}" FontSize="15" Margin="2" HorizontalAlignment="Right" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.RowSpan="4" Background="#444444" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="300"
+                  Margin="{Binding AdvMargin}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition/>
+                <RowDefinition Height="100"/>
+            </Grid.RowDefinitions>
+
+            <DockPanel >
+                <Button Content="重置配置" Height="36" Width="80" FontSize="15" Command="{Binding ResetCmd}" BorderBrush="DarkMagenta" Margin="5 0 10 0" Background="#555555" Foreground="Azure" DockPanel.Dock="Right"/>
+                <Button Content="全部隐藏" Height="36" Width="80" FontSize="15" Command="{Binding HideCmd}" BorderBrush="DarkMagenta" Margin="5" Background="#555555" Foreground="Azure" />
+                <Button Content="全部显示" Height="36" Width="80" FontSize="15" Command="{Binding ShowCmd}" BorderBrush="DarkMagenta" Margin="5" Background="#555555" Foreground="Azure" />
+            </DockPanel>
+            
+            <StackPanel Margin="10" Grid.Row="1">
+                <TextBlock Text="配置格式" Margin="3 10"/>
+                <TextBlock Text="{x:Static p:Resources.SettingFormat}" Margin="3 10" FontSize="15" TextWrapping="Wrap"/>
+
+                <TextBox Text="{Binding NewConfig}" AcceptsReturn="True" TextWrapping="Wrap" Height="100" Margin="3 10" Foreground="Azure" BorderBrush="{x:Null}" Background="#555555"/>
+            </StackPanel>
+
+
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="2">
+                <Button Content="默认设置" Height="36" Width="80" FontSize="15" Command="{Binding OrgCmd}" BorderBrush="DarkMagenta" Margin="25 0" Background="#555555" Foreground="Azure" />
+                <Button Content="导入设置" Height="36" Width="80" FontSize="15" Command="{Binding NewCmd}" BorderBrush="DarkMagenta" Margin="25 0" Background="#555555" Foreground="Azure" />
             </StackPanel>
         </Grid>
     </Grid>

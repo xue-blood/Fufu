@@ -106,12 +106,7 @@ _end_:
             Name = Properties.Settings.Default.Name;
             Password = Security.Decrypt(Properties.Settings.Default.Password, "p@ssw0rd");
 
-            var cfg = Properties.Settings.Default.TimeTypes.Split('|');
-            foreach (var s in cfg) {
-                var d = new TimeData();
-                if (d.Parse(s))
-                    Config.timeTypes.Add(d);
-            }
+            Config.loadConfig ();
 
             Config.onConfigUpdated += updateLogs;
             Config.onDataClear += ClearAccount;
@@ -147,12 +142,7 @@ _end_:
             Properties.Settings.Default.Name = Name;
             Properties.Settings.Default.Password = Security.Encrypt(Password, "p@ssw0rd");
 
-            var sbd = new StringBuilder();
-            for (int i = 0; i < Config.timeTypes.Count(); i++) {
-                sbd.Append(Config.timeTypes[i].UnParse() + "|");
-            }
-            Properties.Settings.Default.TimeTypes = sbd.Length > 1 ? sbd.ToString(0, sbd.Length - 1) : "";
-
+            Config.saveConfig ();
             Properties.Settings.Default.Save();
 
             foreach (var f in filters) {

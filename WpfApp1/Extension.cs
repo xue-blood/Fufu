@@ -8,12 +8,13 @@ using System.Diagnostics;
 using MiniJSON;
 using System.IO;
 using System.Windows;
+using System.Collections.ObjectModel;
 
 namespace WpfApp1 {
     public static class Extension {
 
         public static async Task<Dictionary<string, object>> PostJsonAsync ( this HttpClient web, string url, IEnumerable<KeyValuePair<string, string>> keys ) {
-            Debug.Print(url + keys.ToUrl());
+            Debug.Print (url + keys.ToUrl ());
             Dictionary<string, object> json = null;
             var res = await web.PostAsync (url, new FormUrlEncodedContent (keys));
             using (var reader = new StreamReader (await res.Content.ReadAsStreamAsync ())) {
@@ -30,7 +31,7 @@ namespace WpfApp1 {
         public static async Task<Dictionary<string, object>> GetJsonAsync ( this HttpClient web, string url, IEnumerable<KeyValuePair<string, string>> keys ) {
             Dictionary<string, object> json = null;
 
-            Debug.Print(url + keys.ToUrl());
+            Debug.Print (url + keys.ToUrl ());
             var res = await web.GetAsync (url + keys.ToUrl ());
             using (var reader = new StreamReader (await res.Content.ReadAsStreamAsync ())) {
                 var raw = await reader.ReadToEndAsync ();
@@ -76,5 +77,17 @@ namespace WpfApp1 {
 
         public static bool IsSameDay ( this DateTime date, DateTime other ) { return date.Year == other.Year && date.DayOfYear == other.DayOfYear; }
         public static bool IsNowDay ( this DateTime date ) { return date.IsSameDay (DateTime.Now); }
+
+        public delegate void Callback<T> ( T t );
+
+        public static void Refresh<T> ( this ObservableCollection<T> list, Callback<T> each = null ) {
+            if (list == null && list.Count == 0) { return; }
+            for (int i = 0; i<list.Count; i++) {
+                T item = list[i];
+                list.RemoveAt (i);
+                if (each != null) { each (item); }
+                list.Insert (i, item);
+            }
+        }
     }
 }
