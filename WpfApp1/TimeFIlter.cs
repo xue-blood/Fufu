@@ -20,7 +20,7 @@ namespace WpfApp1 {
                 }
                 if (string.IsNullOrEmpty (log.time_out)) {
                     log.type_out = TimeType.Color;
-                    log.color_in = "DarkGoldenrod";
+                    log.color_out = "DarkGoldenrod";
                 }
             }
         }
@@ -29,9 +29,6 @@ namespace WpfApp1 {
     public class TimeFilter : ITimeFilter {
 
         public void Filter ( Log log ) {
-            if (log.time.IsNowDay ())
-                return;
-
             if (log.week_code != 0 && log.week_code != 6) {
 
                 TimeSpan ti, to;
