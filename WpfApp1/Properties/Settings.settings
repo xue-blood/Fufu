@@ -51,5 +51,8 @@
 22:00,0:00,0,False,Green,|
 0:00,0:00,2,False,DarkGoldenrod,下班未打卡</Value>
     </Setting>
+    <Setting Name="TimeReourde" Type="System.String" Scope="User">
+      <Value Profile="(Default)">22:00,1.00:00,10:00,LightGreen|1.00:00,1.9:00,13:30,LightCoral</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

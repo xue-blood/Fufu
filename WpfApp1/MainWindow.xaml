@@ -51,7 +51,7 @@
                   IsReadOnly="True" CanUserSortColumns="False" CanUserResizeColumns="True" CanUserReorderColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="日期" Width="Auto" MinWidth="165" Binding="{Binding Path=date, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="星期" Width="Auto" MinWidth="100" Binding="{Binding Path=week, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="星期" Width="Auto" MinWidth="50" Binding="{Binding Path=week, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="上班" Width="Auto" MinWidth="100" Binding="{Binding Path=time_in, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="下班" Width="Auto" MinWidth="100" Binding="{Binding Path=time_out, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
@@ -86,6 +86,14 @@
                         <!--上班-->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding type_in, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Self},Path=Column.DisplayIndex}" Value="2"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Foreground" Value="{Binding color_in}"/>
+                        </MultiDataTrigger>
+                        
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding type_in, UpdateSourceTrigger=PropertyChanged}" Value="1"/>
                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},Path=Column.DisplayIndex}" Value="2"/>
                             </MultiDataTrigger.Conditions>
@@ -101,6 +109,14 @@
                         </MultiDataTrigger>
 
                         <!--下班-->
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding type_out, UpdateSourceTrigger=PropertyChanged}" Value="0"/>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Self},Path=Column.DisplayIndex}" Value="3"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Foreground" Value="{Binding color_out}"/>
+                        </MultiDataTrigger>
+                        
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding type_out, UpdateSourceTrigger=PropertyChanged}" Value="1"/>

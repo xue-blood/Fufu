@@ -60,6 +60,8 @@ namespace WpfApp1 {
     public static class Config {
         public static ObservableCollection<TimeData> timeTypes = new ObservableCollection<TimeData> ();
 
+        public static ObservableCollection<Tuple<TimeSpan, TimeSpan, TimeSpan, String>> timeReorder = new ObservableCollection<Tuple<TimeSpan, TimeSpan, TimeSpan, String>> ();
+
         public static event ConfigUpdate onConfigUpdated;
 
         public static event ConfigUpdate onDataClear;
@@ -77,15 +79,28 @@ namespace WpfApp1 {
                 onDataClear ();
         }
 
-        public static void loadConfig ( string _cfg = null ) {
+        public static void loadConfig ( string _cfg = null, string _reorder = null ) {
             pauseUpdate = true;
             Config.timeTypes.Clear ();
             var cfg = _cfg == null ? Properties.Settings.Default.TimeTypes.Split ('|') : _cfg.Split ('|');
             foreach (var s in cfg) {
                 var d = new TimeData ();
-                if (d.Parse (s))
-                    Config.timeTypes.Add (d);
+                if (d.Parse (s)) Config.timeTypes.Add (d);
             }
+
+            timeReorder.Clear ();
+            var reorder = _reorder == null ? Properties.Settings.Default.TimeReourde.Split ('|') : _reorder.Split ('|');
+            foreach (var s in reorder) {
+                var ss = s.Split (',');
+                if (ss.Length == 4) {
+                    TimeSpan a, b, c;
+                    TimeSpan.TryParse (ss[0], out a);
+                    TimeSpan.TryParse (ss[1], out b);
+                    TimeSpan.TryParse (ss[2], out c);
+                    timeReorder.Add (new Tuple<TimeSpan, TimeSpan, TimeSpan, String> (a, b, c, ss[3]));
+                }
+            }
+
             pauseUpdate = false;
             UpdateConfig ();
         }
@@ -96,6 +111,12 @@ namespace WpfApp1 {
                 sbd.Append (Config.timeTypes[i].UnParse () + "|");
             }
             Properties.Settings.Default.TimeTypes = sbd.Length > 1 ? sbd.ToString (0, sbd.Length - 1) : "";
+
+            sbd.Clear ();
+            foreach (var r in timeReorder) {
+                sbd.Append (r.Item1.ToString (@"d\.hh\:mm") + "," + r.Item2.ToString (@"d\.hh\:mm") + "," + r.Item3.ToString (@"hh\:mm") + "," + r.Item4 + "|");
+            }
+            Properties.Settings.Default.TimeReourde = sbd.Length > 1 ? sbd.ToString (0, sbd.Length - 1) : "";
         }
     }
 }

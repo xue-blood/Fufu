@@ -105,7 +105,7 @@ namespace WpfApp1 {
             };
             var ret = await web.GetJsonAsync (server_url, content);
 
-            log.time = _date;
+            log._date = _date;
             log.date = _date.ToString ("yy年M月d日");
             log.week_code = (int)_date.DayOfWeek;
             log.week = week_arr[log.week_code];
@@ -116,6 +116,12 @@ namespace WpfApp1 {
                     var cd = cards[0] as Dictionary<string, object>;
                     log.time_in = cd.Get<string> ("time_in");
                     log.time_out = cd.Get<string> ("time_out");
+                    TimeSpan a, b;
+                    TimeSpan.TryParse (log.time_in, out a);
+                    TimeSpan.TryParse (log.time_out, out b);
+                    log.records = new List<TimeSpan> ();
+                    log.records.Add (a);
+                    log.records.Add (b);
                 }
             }
             else {
@@ -125,8 +131,6 @@ namespace WpfApp1 {
 
             return log;
         }
-
-        static TimeSpan aftern = new TimeSpan(15, 0, 0);
 
         // 获取数据第二种方法
         // https://s9.zkcserv.com/cb_hrms/index.cfm?event=ionicAction.ionicAction.getAtSignInData&_user_name=&_pass_word=&_is_login=1&_notification_token=&_device_type=ios&current_date=20180809&time_zone=+08:00
@@ -151,27 +155,20 @@ namespace WpfApp1 {
             var ret = await web.GetJsonAsync (server_url, content);
 
 
-            log.time = _date;
+            log._date = _date;
             log.date = _date.ToString ("yy年M月d日");
             log.week_code = (int)_date.DayOfWeek;
             log.week = week_arr[log.week_code];
 
-            if(ret != null) {
-                var cards = ret.Get<List<object>>("ca_r");
-                // 只有一次
+            if (ret != null) {
+                var cards = ret.Get<List<object>> ("ca_r");
                 if (cards.Count > 0) {
-                    var tm = (cards[0] as Dictionary<string, object>).Get<string>("ti");
-                    TimeSpan d;
-                    TimeSpan.TryParse(tm, out d);
-                    if (d > aftern)
-                        log.time_out = tm;
-                    else
-                        log.time_in = tm;
-                }
-
-                // 取最后一次
-                if (cards.Count > 1) {
-                    log.time_out = (cards[cards.Count - 1] as Dictionary<string, object>).Get<string>("ti");
+                    log.records = new List<TimeSpan> ();
+                    for (int i = 0; i < cards.Count; i++) {
+                        TimeSpan t;
+                        TimeSpan.TryParse ((cards[i] as Dictionary<string, object>).Get<string> ("ti"), out t);
+                        log.records.Add (t);
+                    }
                 }
             }
 
@@ -186,17 +183,25 @@ namespace WpfApp1 {
     }
 
     public class Log {
+        // 日期
         public string date { get; set; }
+        public DateTime _date { get; set; }
+        // 星期
         public string week { get; set; }
+        public int week_code { get; set; }
+        // 时间
         public string time_in { get; set; }
         public string time_out { get; set; }
+        public bool re_time_in { get; set; }
+        public bool re_time_out { get; set; }
+
+        // 所有数据
+        public List<TimeSpan> records { get; set; }
 
         // 界面扩展数据
-        public int week_code { get; set; }
         public TimeType type_in { get; set; }
         public TimeType type_out { get; set; }
 
-        public DateTime time { get; set; }
         public string color_in { get; set; }
         public string color_out { get; set; }
 

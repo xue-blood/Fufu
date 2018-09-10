@@ -170,5 +170,17 @@ namespace WpfApp1.Properties {
                 this["OrgTimeTypes"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("22:00,1.00:00,10:00,LightGreen|1.00:00,1.9:00,13:30,LightCoral")]
+        public string TimeReourde {
+            get {
+                return ((string)(this["TimeReourde"]));
+            }
+            set {
+                this["TimeReourde"] = value;
+            }
+        }
     }
 }

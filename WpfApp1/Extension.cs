@@ -75,6 +75,8 @@ namespace WpfApp1 {
             return r;
         }
 
+        public static bool valid(this string s ) { return !String.IsNullOrEmpty (s); }
+
         public static bool IsSameDay ( this DateTime date, DateTime other ) { return date.Year == other.Year && date.DayOfYear == other.DayOfYear; }
         public static bool IsNowDay ( this DateTime date ) { return date.IsSameDay (DateTime.Now); }
 

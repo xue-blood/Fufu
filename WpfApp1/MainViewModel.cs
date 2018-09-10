@@ -44,7 +44,8 @@ namespace WpfApp1 {
 
         ITimeFilter[] filters = new ITimeFilter[] {
             new TimeFilter (),
-            new TodayFilter()
+            new TodayFilter(),
+            new ReOrderFilter(),
         };
 
         async Task getLogAsync(DateTime date) {
@@ -67,12 +68,18 @@ namespace WpfApp1 {
                     if (log == null)
                         continue;
 
-                    Logs.Add(log);
+                    // 预处理
+                    foreach (var f in filters) f.PreFilter (log, Logs.Count > 0 ? Logs[Logs.Count - 1] : null);
 
-                    // 数据处理
-                    foreach (var f in filters) {
-                        f.Filter(log);
+                    // 后处理
+                    foreach (var f in filters) { f.Filter (log); }
+
+                    if (Logs.Count > 0) {
+                        var l = Logs[Logs.Count - 1];
+                        Logs.RemoveAt (Logs.Count - 1);
+                        Logs.Add (l);
                     }
+                    Logs.Add (log);
 
                     // 统计
                     if (log.week_code != 0 && log.week_code != 6 && !d.IsNowDay()) {

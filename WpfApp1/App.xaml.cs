@@ -21,5 +21,13 @@ namespace WpfApp1 {
                 MessageBox.Show (e.Exception.Message);
             e.Handled = true;
         }
+
+        public class AppRun {
+            [STAThread]
+            static void Main () {
+                try { App.Main (); }
+                catch (Exception _e) { MessageBox.Show (_e.Message + "\n"); }
+            }
+        }
     }
 }
