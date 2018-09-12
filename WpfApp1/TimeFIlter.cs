@@ -18,8 +18,10 @@ namespace WpfApp1 {
                 if (string.IsNullOrEmpty (log.time_in)) {
                     log.type_in = TimeType.Color;
                     log.color_in = "Firebrick";
+                    log.re_time_in = true;
                 }
                 if (string.IsNullOrEmpty (log.time_out)) {
+                    log.re_time_out = true;
                     log.type_out = TimeType.Color;
                     log.color_out = "DarkGoldenrod";
                 }
@@ -74,6 +76,9 @@ namespace WpfApp1 {
                     if (adj_in && adj_out)
                         break;
                 }
+
+                if (log.color_in == null) log.color_in = "white";
+                if (log.color_out == null) log.color_out = "white";
             }
         }
     }

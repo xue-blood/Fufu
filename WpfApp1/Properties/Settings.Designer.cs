@@ -13,7 +13,8 @@ namespace WpfApp1.Properties {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.7.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    [System.Configuration.SettingsProvider (typeof (WpfApp1.CustomSettingsProvider))]
+    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -138,7 +139,8 @@ namespace WpfApp1.Properties {
 9:30,9:40,1,True,Sienna,|
 9:40,10:00,1,True,Firebrick,|
 10:00,12:00,2,True,Firebrick,|
-12:00,18:00,0,True,Firebrick,|
+12:00,13:30,0,True,ForestGreen,|
+13:30,18:00,0,True,Firebrick,|
 18:00,22:00,0,False,Green,|
 22:00,23:59,0,False,Green,|
 0:00,0:00,2,False,DarkGoldenrod,下班未打卡")]
@@ -158,7 +160,8 @@ namespace WpfApp1.Properties {
 9:30,9:40,1,True,Sienna,|
 9:40,10:00,1,True,Firebrick,|
 10:00,12:00,2,True,Firebrick,|
-12:00,18:00,0,True,Firebrick,|
+12:00,13:30,0,True,ForestGreen,|
+13:30,18:00,0,True,Firebrick,|
 18:00,22:00,0,False,Green,|
 22:00,23:59,0,False,Green,|
 0:00,0:00,2,False,DarkGoldenrod,下班未打卡")]
@@ -204,6 +207,42 @@ namespace WpfApp1.Properties {
             }
             set {
                 this["enableOutTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string VersionSkip {
+            get {
+                return ((string)(this["VersionSkip"]));
+            }
+            set {
+                this["VersionSkip"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Setting {
+            get {
+                return ((string)(this["Setting"]));
+            }
+            set {
+                this["Setting"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastExe {
+            get {
+                return ((string)(this["LastExe"]));
+            }
+            set {
+                this["LastExe"] = value;
             }
         }
     }

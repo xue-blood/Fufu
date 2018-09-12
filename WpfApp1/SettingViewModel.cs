@@ -22,6 +22,9 @@ namespace WpfApp1 {
         public Command ClearCmd { get { return clearCmd ?? (clearCmd = new Command { ExecuteDelegate = _ => Config.ClearData () }); } }
         private Command clearCmd;
 
+        public Command UpdateCmd { get { return updateCmd ?? (updateCmd = new Command { ExecuteDelegate = _ => App.AppRun.UpdateVersion (true) }); } }
+        private Command updateCmd;
+
         public Command ResetCmd { get { return resetCmd ?? (resetCmd = new Command { ExecuteDelegate = _ => reset () }); } }
         private Command resetCmd;
 

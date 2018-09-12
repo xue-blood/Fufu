@@ -52,6 +52,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -75,6 +76,7 @@
     </ApplicationDefinition>
     <Compile Include="Config.cs" />
     <Compile Include="Converter.cs" />
+    <Compile Include="CustomSettingsProvider.cs" />
     <Compile Include="Fufu.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="MiniJSON.cs" />
@@ -124,7 +126,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>

@@ -125,7 +125,6 @@ namespace WpfApp1 {
             foreach (var s in cfg) {
                 var d = new TimeData ();
                 if (d.Parse (s)) Config.timeTypes.Add (d);
-                else MessageBox.Show ("上班时间 配置错误！");
             }
 
             timeReorder.Clear ();
@@ -135,7 +134,6 @@ namespace WpfApp1 {
                 if (ss.Length == 4) {
                     var d = new OutTimeData ();
                     if (d.Parse (s)) timeReorder.Add (d);
-                    else MessageBox.Show ("加班时间 配置错误！");
                 }
             }
 

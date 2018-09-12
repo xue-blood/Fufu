@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfApp1"
         xmlns:p="clr-namespace:WpfApp1.Properties" 
         mc:Ignorable="d"
-        Title="Setting" Height="600" Width="{Binding SizeX,Mode=TwoWay}"
+        Title="Setting" Height="630" Width="{Binding SizeX,Mode=TwoWay}"
         WindowStartupLocation="Manual"
         Background="#444444"
         Foreground="Azure" 
@@ -300,8 +300,9 @@
 
 
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="2">
-                <Button Content="默认设置" Height="36" Width="80" FontSize="15" Command="{Binding OrgCmd}" BorderBrush="DarkMagenta" Margin="25 0" Background="#555555" Foreground="Azure" />
-                <Button Content="导入设置" Height="36" Width="80" FontSize="15" Command="{Binding NewCmd}" BorderBrush="DarkMagenta" Margin="25 0" Background="#555555" Foreground="Azure" />
+                <Button Content="默认设置" Height="36" Width="80" FontSize="15" Command="{Binding OrgCmd}" BorderBrush="DarkMagenta" Margin="5 0 10 0" Background="#555555" Foreground="Azure" />
+                <Button Content="导入设置" Height="36" Width="80" FontSize="15" Command="{Binding NewCmd}" BorderBrush="DarkMagenta" Margin="5" Background="#555555" Foreground="Azure" />
+                <Button Content="检查更新" Height="36" Width="80" FontSize="15" Command="{Binding UpdateCmd}" BorderBrush="DarkMagenta" Margin="5" Background="#555555" Foreground="Azure"/>
             </StackPanel>
         </Grid>
     </Grid>

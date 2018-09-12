@@ -124,6 +124,16 @@ https://github.com/xue-blood/Fufu</value>
   <data name="Color" xml:space="preserve">
     <value>颜色标注</value>
   </data>
+  <data name="DelScript" xml:space="preserve">
+    <value>:_del_
+if exist "WpfApp1.exe" (
+  timeout 1
+  del /f WpfApp1.exe
+  goto :_del_
+)
+
+rename WpfApp11.exe WpfApp1.exe</value>
+  </data>
   <data name="None" xml:space="preserve">
     <value>隐藏</value>
   </data>
@@ -132,6 +142,9 @@ https://github.com/xue-blood/Fufu</value>
   </data>
   <data name="OutSettingFormat" xml:space="preserve">
     <value>加班开始时间,结束时间,第二天调休截至时间,颜色</value>
+  </data>
+  <data name="ReleaseName" xml:space="preserve">
+    <value>服服考勤绿色版</value>
   </data>
   <data name="SettingFormat" xml:space="preserve">
     <value>每个时间段用 "|" 分割，內部用',' 分割，可以回车换行
@@ -143,6 +156,9 @@ https://github.com/xue-blood/Fufu</value>
 5:备注（可选）</value>
   </data>
   <data name="Version" xml:space="preserve">
-    <value> v1.0</value>
+    <value>v2.0</value>
+  </data>
+  <data name="VersionUrl" xml:space="preserve">
+    <value>https://raw.githubusercontent.com/xue-blood/Fufu/master/version.txt</value>
   </data>
 </root>

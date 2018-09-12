@@ -35,7 +35,8 @@
 9:30,9:40,1,True,Sienna,|
 9:40,10:00,1,True,Firebrick,|
 10:00,12:00,2,True,Firebrick,|
-12:00,18:00,0,True,Firebrick,|
+12:00,13:30,0,True,ForestGreen,|
+13:30,18:00,0,True,Firebrick,|
 18:00,22:00,0,False,Green,|
 22:00,23:59,0,False,Green,|
 0:00,0:00,2,False,DarkGoldenrod,下班未打卡</Value>
@@ -46,7 +47,8 @@
 9:30,9:40,1,True,Sienna,|
 9:40,10:00,1,True,Firebrick,|
 10:00,12:00,2,True,Firebrick,|
-12:00,18:00,0,True,Firebrick,|
+12:00,13:30,0,True,ForestGreen,|
+13:30,18:00,0,True,Firebrick,|
 18:00,22:00,0,False,Green,|
 22:00,23:59,0,False,Green,|
 0:00,0:00,2,False,DarkGoldenrod,下班未打卡</Value>
@@ -59,6 +61,15 @@
     </Setting>
     <Setting Name="enableOutTime" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="VersionSkip" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Setting" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="LastExe" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

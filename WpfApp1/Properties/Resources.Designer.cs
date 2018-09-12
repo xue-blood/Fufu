@@ -80,6 +80,22 @@ namespace WpfApp1.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :_del_
+        ///if exist &quot;WpfApp1.exe&quot; (
+        ///  timeout 1
+        ///  del /f WpfApp1.exe
+        ///  goto :_del_
+        ///)
+        ///
+        ///rename WpfApp11.exe WpfApp1.exe.
+        /// </summary>
+        public static string DelScript {
+            get {
+                return ResourceManager.GetString("DelScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 隐藏.
         /// </summary>
         public static string None {
@@ -107,6 +123,15 @@ namespace WpfApp1.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 服服考勤绿色版.
+        /// </summary>
+        public static string ReleaseName {
+            get {
+                return ResourceManager.GetString("ReleaseName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 每个时间段用 &quot;|&quot; 分割，內部用&apos;,&apos; 分割，可以回车换行
         ///
         ///1:开始时间,
@@ -122,11 +147,20 @@ namespace WpfApp1.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  v1.0.
+        ///   Looks up a localized string similar to v2.0.
         /// </summary>
         public static string Version {
             get {
                 return ResourceManager.GetString("Version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://raw.githubusercontent.com/xue-blood/Fufu/master/version.txt.
+        /// </summary>
+        public static string VersionUrl {
+            get {
+                return ResourceManager.GetString("VersionUrl", resourceCulture);
             }
         }
     }
