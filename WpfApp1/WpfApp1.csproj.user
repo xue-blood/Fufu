@@ -15,4 +15,7 @@
     <StartProgram>
     </StartProgram>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartArguments>sfd</StartArguments>
+  </PropertyGroup>
 </Project>

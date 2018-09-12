@@ -80,22 +80,6 @@ namespace WpfApp1.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to :_del_
-        ///if exist &quot;WpfApp1.exe&quot; (
-        ///  timeout 1
-        ///  del /f WpfApp1.exe
-        ///  goto :_del_
-        ///)
-        ///
-        ///rename WpfApp11.exe WpfApp1.exe.
-        /// </summary>
-        public static string DelScript {
-            get {
-                return ResourceManager.GetString("DelScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 隐藏.
         /// </summary>
         public static string None {
@@ -123,7 +107,7 @@ namespace WpfApp1.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 服服考勤绿色版.
+        ///   Looks up a localized string similar to 服服考勤绿色版_.
         /// </summary>
         public static string ReleaseName {
             get {

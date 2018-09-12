@@ -6,6 +6,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -33,18 +34,29 @@ namespace WpfApp1 {
             [STAThread]
             static void Main () {
                 try {
+                    // 删除先前的
+                    delLast ();
+
                     UpdateVersion ();
                     App.Main ();
+
+                    // 再试一次
+                    delLast ();
                 }
                 catch (Exception _e) { MessageBox.Show (_e.Message + "\n"); }
+            }
+
+            static void delLast () {
+                var args = Environment.GetCommandLineArgs ();
+                if (args.Length == 2) {
+                    if (File.Exists (args[1]) && args[1] != Assembly.GetExecutingAssembly ().Location)
+                        File.Delete (args[1]);
+                }
             }
 
             public static void UpdateVersion ( bool manul = false ) {
                 var bgw = new BackgroundWorker ();
                 bgw.DoWork += ( _, __ ) => {
-                    // 删除先前的
-                    if (File.Exists (Prop.Settings.Default.LastExe) && Prop.Settings.Default.LastExe != Assembly.GetExecutingAssembly ().Location)
-                        File.Delete (Prop.Settings.Default.LastExe);
 
                     using (var client = new HttpClient ()) {
                         var response = client.GetAsync (Prop.Resources.VersionUrl).Result;
@@ -61,7 +73,7 @@ namespace WpfApp1 {
 
                                 Application.Current.Dispatcher.Invoke (() => {
                                     var r = MessageBox.Show (ver[1] + "\n\n\n是否更新，点击 “取消” 忽略这个版本", "发现新版本 " + ver[0], MessageBoxButton.YesNoCancel);
-                                    if (r == MessageBoxResult.Yes) doUpdate (ver[2], ver[0]);
+                                    if (r == MessageBoxResult.Yes) doUpdate (ver[2].Trim (), ver[0]);
                                     else if (r == MessageBoxResult.Cancel) doSkip (ver[0]);
                                 });
                             }
@@ -75,23 +87,24 @@ namespace WpfApp1 {
             /// 更新
             /// </summary>
             static void doUpdate ( string url, string ver ) {
-                using (var client = new HttpClient ()) {
-                    var response = client.GetAsync ("http://192.168.2.110/img/logo.png").Result;
-                    if (response.IsSuccessStatusCode) {
-                        // 更新文件
-                        //using (var file = new BinaryWriter (new FileStream (Prop.Resources.ReleaseName + ver + ".exe", FileMode.Create))) {
-                        using (var file = new BinaryWriter (new FileStream ("WpfApp1_" + ver + ".exe", FileMode.Create))) {
-                            file.Write (response.Content.ReadAsByteArrayAsync ().Result);
-                        };
-
-                        if (MessageBox.Show ("更新成功 是否重新启动", "", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
-                            Prop.Settings.Default.LastExe = Assembly.GetExecutingAssembly ().Location;
-                            Prop.Settings.Default.Save ();
-                            System.Diagnostics.Process.Start ("WpfApp1_" + ver + ".exe");
-                            Application.Current.Shutdown ();
-                        }
+                var bgw = new BackgroundWorker ();
+                bgw.DoWork += ( _, __ ) => {
+                    // https error
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    using (var client = new WebClient ()) {
+                        client.DownloadFile (url, Prop.Resources.ReleaseName + ver + ".exe");
                     }
-                }
+                };
+
+                bgw.RunWorkerCompleted += ( _, __ ) => {
+                    if (MessageBox.Show ("更新成功 是否重新启动", "", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
+
+                        var dir = Path.GetDirectoryName (Assembly.GetExecutingAssembly ().Location);
+                        System.Diagnostics.Process.Start (dir + "/" + Prop.Resources.ReleaseName + ver + ".exe", Assembly.GetExecutingAssembly ().Location);
+                        Application.Current.Shutdown ();
+                    }
+                };
+                bgw.RunWorkerAsync ();
             }
 
             /// <summary>
