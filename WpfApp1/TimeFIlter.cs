@@ -52,7 +52,7 @@ namespace WpfApp1 {
                             log.type_in = d.type;
                             log.color_in = d.color;
                         }
-                        if (!log.re_time_in && !adj_out && string.IsNullOrEmpty (log.time_out) && !d.time_in) {
+                        if (!log.re_time_out && !adj_out && string.IsNullOrEmpty (log.time_out) && !d.time_in) {
                             adj_out = true;
                             log.type_out = d.type;
                             log.color_out = d.color;
@@ -64,7 +64,7 @@ namespace WpfApp1 {
                             log.type_in = d.type;
                             log.color_in = d.color;
                         }
-                        if (!log.re_time_in && !adj_out && !d.time_in && to >= d.start && to <= d.end) {
+                        if (!log.re_time_out && !adj_out && !d.time_in && to >= d.start && to <= d.end) {
                             adj_out = true;
                             log.type_out = d.type;
                             log.color_out = d.color;
@@ -81,25 +81,26 @@ namespace WpfApp1 {
     public class ReOrderFilter : TimeFilter {
 
         public override void PreFilter ( Log today, Log next ) {
+            if (!Properties.Settings.Default.enableOutTime) return;
             if (today.records == null || today.records.Count == 0 || !today.time_in.valid () || !today.time_out.valid ()) return;
 
             // 当天时间
             for (int i = today.records.Count - 1; i >= 0; i--) {
                 foreach (var tc in Config.timeReorder) {
                     // 加班时间
-                    if (today.records[i] > tc.Item1 && today.records[i] < tc.Item2) {
+                    if (today.records[i] > tc.start && today.records[i] < tc.end) {
                         today.re_time_out = true;
-                        today.color_out = tc.Item4;
+                        today.color_out = tc.color;
                         today.type_out = TimeType.Normal;
                         today.time_out = today.time_out + "(加班)";
 
                         // 调休
                         if (next == null || next.records == null) goto _reorder_end_;
                         for (int j = 0; j < next.records.Count; j++) {
-                            if (next.records[j] < tc.Item3 && next.type_in != TimeType.Normal) {
+                            if (next.records[j] < tc.renew && next.type_in != TimeType.Normal) {
 
                                 next.re_time_in = true;
-                                next.color_in = tc.Item4;
+                                next.color_in = tc.color;
                                 next.type_in = TimeType.Normal;
                                 next.time_in = next.records[j].ToString (@"hh\:mm") + "(调休)";
                                 break;
@@ -116,10 +117,10 @@ namespace WpfApp1 {
             for (int i = 0; i < next.records.Count; i++) {
                 var nxt = new TimeSpan (1, next.records[i].Hours, next.records[i].Minutes, next.records[i].Seconds);
                 foreach (var tc in Config.timeReorder) {
-                    if (nxt > tc.Item1 && nxt < tc.Item2) {
+                    if (nxt > tc.start && nxt < tc.end) {
                         // 下班
                         today.re_time_out = true;
-                        today.color_out = tc.Item4;
+                        today.color_out = tc.color;
                         today.type_out = TimeType.Normal;
                         today.time_out = nxt.ToString (@"hh\:mm") + "(次日)";
 
@@ -131,9 +132,9 @@ namespace WpfApp1 {
                         base.Filter (next);
 
                         // 是否算调休
-                        if (next.type_in != TimeType.Normal && next.records[i + 1] < tc.Item3) {
+                        if (next.type_in != TimeType.Normal && next.records[i + 1] < tc.renew) {
                             next.type_in = TimeType.Normal;
-                            next.color_in = tc.Item4;
+                            next.color_in = tc.color;
                             next.re_time_in = true;
                         }
 

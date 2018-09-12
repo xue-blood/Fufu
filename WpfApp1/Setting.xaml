@@ -189,6 +189,7 @@
         <Grid Margin="{Binding BasMargin}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
+                <RowDefinition Height="2*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
@@ -228,8 +229,32 @@
                 </ItemsControl>
             </Grid>
 
-            <StackPanel Grid.Row="2" VerticalAlignment="Center" Margin="4 2">
-                <TextBlock HorizontalAlignment="Center"  Foreground="Cyan" Text="{x:Static p:Resources.Author}" FontSize="12">
+            <Grid Grid.Row="2" Margin="5">
+                <StackPanel>
+                    <ToggleButton Content="启用加班调休" IsChecked="{Binding enableOutTime}" Foreground="AliceBlue" BorderBrush="Crimson"/>
+                    <ItemsControl ItemsSource="{Binding OutTimes}" IsEnabled="{Binding enableOutTime}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel>
+                                    <TextBlock Text="{Binding}" FontSize="15" TextAlignment="Center" VerticalAlignment="Center"/>
+                                    <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Window}},Path=DataContext.Colors}" SelectedItem="{Binding color}" FontSize="15" Width="100" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Background="{Binding}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="100" Height="20">
+                                                    <TextBlock Text="{Binding}"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Grid.Row="3" VerticalAlignment="Center" Margin="4 2">
+                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Foreground="Cyan" Text="{x:Static p:Resources.Author}" FontSize="12">
                     <TextBlock.Triggers>
                         <EventTrigger RoutedEvent="TextBlock.Loaded">
                             <BeginStoryboard>
@@ -261,12 +286,16 @@
                 <Button Content="全部隐藏" Height="36" Width="80" FontSize="15" Command="{Binding HideCmd}" BorderBrush="DarkMagenta" Margin="5" Background="#555555" Foreground="Azure" />
                 <Button Content="全部显示" Height="36" Width="80" FontSize="15" Command="{Binding ShowCmd}" BorderBrush="DarkMagenta" Margin="5" Background="#555555" Foreground="Azure" />
             </DockPanel>
-            
+
             <StackPanel Margin="10" Grid.Row="1">
                 <TextBlock Text="配置格式" Margin="3 10"/>
-                <TextBlock Text="{x:Static p:Resources.SettingFormat}" Margin="3 10" FontSize="15" TextWrapping="Wrap"/>
+                <TextBlock Text="{x:Static p:Resources.SettingFormat}" Margin="3 10" FontSize="12" TextWrapping="Wrap"/>
 
-                <TextBox Text="{Binding NewConfig}" AcceptsReturn="True" TextWrapping="Wrap" Height="100" Margin="3 10" Foreground="Azure" BorderBrush="{x:Null}" Background="#555555"/>
+                <TextBox Text="{Binding NewConfig}" AcceptsReturn="True" TextWrapping="Wrap" FontSize="12"  Height="50" Margin="3 10" Foreground="Azure" BorderBrush="{x:Null}" Background="#555555"/>
+
+                <TextBlock Text="{x:Static p:Resources.OutSettingFormat}" Margin="3 10" FontSize="12" TextWrapping="Wrap"/>
+
+                <TextBox Text="{Binding OutConfig}" AcceptsReturn="True" TextWrapping="Wrap" FontSize="12"  Height="50" Margin="3 10" Foreground="Azure" BorderBrush="{x:Null}" Background="#555555"/>
             </StackPanel>
 
 

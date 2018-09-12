@@ -8,8 +8,11 @@ using System.Windows;
 
 namespace WpfApp1 {
     public class SettingViewModel : ViewModel {
-
+        // 数据
         public ObservableCollection<TimeData> TimeTypes { get { return Config.timeTypes; } set { Config.timeTypes = value; } }
+        public ObservableCollection<OutTimeData> OutTimes { get { return Config.timeReorder; } set { Config.timeReorder = value; } }
+        public bool enableOutTime { get { return Properties.Settings.Default.enableOutTime; } set { Properties.Settings.Default.enableOutTime = value; RaisePropertyChanged (); Config.UpdateConfig (); } }
+
 
         public IEnumerable<TimeType> TypeList { get { return Enum.GetValues (typeof (TimeType)).Cast<TimeType> (); } }
 
@@ -21,7 +24,8 @@ namespace WpfApp1 {
 
         public Command ResetCmd { get { return resetCmd ?? (resetCmd = new Command { ExecuteDelegate = _ => reset () }); } }
         private Command resetCmd;
-        void reset () { Config.pauseUpdate = true; Config.loadConfig (); TimeTypes.Refresh (); Config.pauseUpdate = false; Config.UpdateConfig (); }
+
+        void reset () { Config.pauseUpdate = true; Config.loadConfig (); TimeTypes.Refresh (); OutTimes.Refresh (); Config.pauseUpdate = false; Config.UpdateConfig (); }
 
 
         public Command ShowCmd { get { return showCmd ?? (showCmd = new Command { ExecuteDelegate = _ => show () }); } }
@@ -41,12 +45,12 @@ namespace WpfApp1 {
         private int sizeX = 450;
 
         // 基本设置
-        public Thickness BasMargin { get { return basMargin; } set { basMargin= value; RaisePropertyChanged (); } }
+        public Thickness BasMargin { get { return basMargin; } set { basMargin = value; RaisePropertyChanged (); } }
         private Thickness basMargin;
 
 
         // 高级设置
-        public Thickness AdvMargin { get { return advMargin; } set { advMargin= value; RaisePropertyChanged (); } }
+        public Thickness AdvMargin { get { return advMargin; } set { advMargin = value; RaisePropertyChanged (); } }
         private Thickness advMargin;
 
         bool adv_open = false;
@@ -69,8 +73,18 @@ namespace WpfApp1 {
             onsize ();
         }
 
+        /// <summary>
+        /// 上班配置
+        /// </summary>
         public string NewConfig { get { return newConfig; } set { newConfig = value; RaisePropertyChanged (); } }
         private string newConfig = Properties.Settings.Default.TimeTypes;
+
+        /// <summary>
+        /// 下班配置
+        /// </summary>
+        public string OutConfig { get { return outConfig; } set { outConfig = value; RaisePropertyChanged (); } }
+        private string outConfig = Properties.Settings.Default.TimeReourde;
+
 
         public Command OrgCmd { get { return orgCmd ?? (orgCmd = new Command { ExecuteDelegate = _ => org_cfg () }); } }
         private Command orgCmd;
@@ -81,13 +95,13 @@ namespace WpfApp1 {
 
         void org_cfg () {
             if (MessageBox.Show ("确定将配置重设为默认值？", "", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
-                Config.loadConfig (Properties.Settings.Default.OrgTimeTypes);
+                Config.loadConfig ();
             }
         }
 
         void new_cfg () {
             if (MessageBox.Show ("确定导入配置？", "", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
-                Config.loadConfig (NewConfig);
+                Config.loadConfig (NewConfig, OutConfig);
             }
         }
 

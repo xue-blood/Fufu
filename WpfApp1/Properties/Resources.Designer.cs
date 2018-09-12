@@ -61,7 +61,8 @@ namespace WpfApp1.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 黄冬 2018 @ 仙剑 Youkia.
+        ///   Looks up a localized string similar to 黄冬 2018 @ 仙剑 Youkia
+        ///https://github.com/xue-blood/Fufu.
         /// </summary>
         public static string Author {
             get {
@@ -97,13 +98,22 @@ namespace WpfApp1.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1:开始时间,
+        ///   Looks up a localized string similar to 加班开始时间,结束时间,第二天调休截至时间,颜色.
+        /// </summary>
+        public static string OutSettingFormat {
+            get {
+                return ResourceManager.GetString("OutSettingFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 每个时间段用 &quot;|&quot; 分割，內部用&apos;,&apos; 分割，可以回车换行
+        ///
+        ///1:开始时间,
         ///2:结束时间,
         ///3:类型(0：显示，1：颜色，2:隐藏),
         ///4:是否上下班(True|False),
-        ///5:备注
-        ///
-        ///每个时间段用 &quot;|&quot; 分割，內部用&apos;,&apos; 分割，可以回车换行.
+        ///5:备注（可选）.
         /// </summary>
         public static string SettingFormat {
             get {

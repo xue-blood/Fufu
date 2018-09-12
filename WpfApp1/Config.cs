@@ -4,21 +4,64 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 
 namespace WpfApp1 {
-    public class TimeData {
+
+    public class IConfig {
+        protected void Update () { Config.UpdateConfig (); }
+        public virtual bool Parse ( string cfg ) { return false; }
+        public virtual string Stringfy () { return ""; }
+    }
+
+    public class OutTimeData : IConfig {
         public TimeSpan start { get; set; }
         public TimeSpan end { get; set; }
-        public TimeType type { get { return _type; } set { _type = value; Config.UpdateConfig (); } }
+        public TimeSpan renew { get; set; }
+        public string color { get { return _color; } set { _color = value; Update (); } }
+        private string _color;
+
+        const string str_fmt = @"d\.h\:mm";
+        const string str_fmt2 = @"h\:mm";
+
+        public override string ToString () {
+            var s = (start.Days > 0 ? "次日" : "") + start.ToString (str_fmt2) + "-" + (end.Days > 0 ? "次日" : "") + end.ToString (str_fmt2);
+            if (s.Length <= 12) s += "\t";
+            return s + "\t调休到" + renew.ToString (str_fmt2);
+        }
+
+        public override bool Parse ( string cfg ) {
+            if (!string.IsNullOrEmpty (cfg)) {
+                var strs = cfg.Split (',');
+                if (strs.Length == 4) {
+                    var t = TimeSpan.Zero;
+                    TimeSpan.TryParse (strs[0], out t); start = t;
+                    TimeSpan.TryParse (strs[1], out t); end = t;
+                    TimeSpan.TryParse (strs[2], out t); renew = t;
+                    color = strs[3];
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public override string Stringfy () {
+            return start.ToString (str_fmt) + "," + end.ToString (str_fmt) + "," + renew.ToString (str_fmt) + "," + color.ToString ();
+        }
+    }
+    public class TimeData : IConfig {
+        public TimeSpan start { get; set; }
+        public TimeSpan end { get; set; }
+        public TimeType type { get { return _type; } set { _type = value; Update (); } }
         private TimeType _type; // 更改设置 刷新
 
-        public string color { get { return _color; } set { _color = value; Config.UpdateConfig (); } }
+        public string color { get { return _color; } set { _color = value; Update (); } }
         private string _color;
 
         public string desc { get; set; }
 
-        public bool time_in { get; set; }
+        public bool time_in { get; set; } // 标注上班还是下班
 
         public bool invalid { get { return start == TimeSpan.Zero && end == TimeSpan.Zero; } }
 
@@ -28,19 +71,15 @@ namespace WpfApp1 {
             return string.IsNullOrEmpty (desc) ? start.ToString (str_fmt) + "-" + end.ToString (str_fmt) : desc;
         }
 
-        public bool Parse ( string cfg ) {
+        public override bool Parse ( string cfg ) {
             if (!string.IsNullOrEmpty (cfg)) {
                 var strs = cfg.Split (',');
                 if (strs.Length == 6) {
                     var t = TimeSpan.Zero;
-                    TimeSpan.TryParse (strs[0], out t);
-                    start = t;
-                    TimeSpan.TryParse (strs[1], out t);
-                    end = t;
+                    TimeSpan.TryParse (strs[0], out t); start = t;
+                    TimeSpan.TryParse (strs[1], out t); end = t;
                     type = (TimeType)strs[2].ToInt ();
-                    bool b;
-                    bool.TryParse (strs[3], out b);
-                    time_in = b;
+                    bool b; bool.TryParse (strs[3], out b); time_in = b;
                     color = strs[4];
                     desc = strs[5];
 
@@ -50,7 +89,7 @@ namespace WpfApp1 {
             return false;
         }
 
-        public string UnParse () {
+        public override string Stringfy () {
             return start.ToString (str_fmt) + "," + end.ToString (str_fmt) + "," + ((int)type).ToString () + "," + time_in.ToString () + "," + color.ToString () + "," + desc;
         }
     }
@@ -60,7 +99,7 @@ namespace WpfApp1 {
     public static class Config {
         public static ObservableCollection<TimeData> timeTypes = new ObservableCollection<TimeData> ();
 
-        public static ObservableCollection<Tuple<TimeSpan, TimeSpan, TimeSpan, String>> timeReorder = new ObservableCollection<Tuple<TimeSpan, TimeSpan, TimeSpan, String>> ();
+        public static ObservableCollection<OutTimeData> timeReorder = new ObservableCollection<OutTimeData> ();
 
         public static event ConfigUpdate onConfigUpdated;
 
@@ -86,6 +125,7 @@ namespace WpfApp1 {
             foreach (var s in cfg) {
                 var d = new TimeData ();
                 if (d.Parse (s)) Config.timeTypes.Add (d);
+                else MessageBox.Show ("上班时间 配置错误！");
             }
 
             timeReorder.Clear ();
@@ -93,11 +133,9 @@ namespace WpfApp1 {
             foreach (var s in reorder) {
                 var ss = s.Split (',');
                 if (ss.Length == 4) {
-                    TimeSpan a, b, c;
-                    TimeSpan.TryParse (ss[0], out a);
-                    TimeSpan.TryParse (ss[1], out b);
-                    TimeSpan.TryParse (ss[2], out c);
-                    timeReorder.Add (new Tuple<TimeSpan, TimeSpan, TimeSpan, String> (a, b, c, ss[3]));
+                    var d = new OutTimeData ();
+                    if (d.Parse (s)) timeReorder.Add (d);
+                    else MessageBox.Show ("加班时间 配置错误！");
                 }
             }
 
@@ -108,13 +146,13 @@ namespace WpfApp1 {
         public static void saveConfig () {
             var sbd = new StringBuilder ();
             for (int i = 0; i < Config.timeTypes.Count (); i++) {
-                sbd.Append (Config.timeTypes[i].UnParse () + "|");
+                sbd.Append (Config.timeTypes[i].Stringfy () + "|");
             }
             Properties.Settings.Default.TimeTypes = sbd.Length > 1 ? sbd.ToString (0, sbd.Length - 1) : "";
 
             sbd.Clear ();
             foreach (var r in timeReorder) {
-                sbd.Append (r.Item1.ToString (@"d\.hh\:mm") + "," + r.Item2.ToString (@"d\.hh\:mm") + "," + r.Item3.ToString (@"hh\:mm") + "," + r.Item4 + "|");
+                sbd.Append (r.Stringfy () + "|");
             }
             Properties.Settings.Default.TimeReourde = sbd.Length > 1 ? sbd.ToString (0, sbd.Length - 1) : "";
         }

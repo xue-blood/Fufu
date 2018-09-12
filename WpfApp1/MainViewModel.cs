@@ -136,11 +136,19 @@ _end_:
         void updateLogs() {
             for (int i = 0; i < Logs.Count; i++) {
                 // 移除后重新添加才会刷新
-                var ls = Logs[i];
-                Logs.RemoveAt(i);
-                foreach (var f in filters)
-                    f.Filter(ls);
-                Logs.Insert(i, ls);
+                Log ls = Logs[i]; Logs.RemoveAt(i);
+                Log lsn = null;
+                if (i > 0) {
+                    lsn = Logs[i - 1];
+                    Logs.RemoveAt (i - 1);
+                }
+                ls.re_time_in = false;
+                ls.re_time_out = false;
+
+                foreach (var f in filters) f.PreFilter (ls, lsn);
+                foreach (var f in filters) f.Filter(ls);
+                if( i > 0 ) Logs.Insert (i -1 , lsn);
+                Logs.Insert (i, ls);
             }
         }
 

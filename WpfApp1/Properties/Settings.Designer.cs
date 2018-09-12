@@ -140,7 +140,7 @@ namespace WpfApp1.Properties {
 10:00,12:00,2,True,Firebrick,|
 12:00,18:00,0,True,Firebrick,|
 18:00,22:00,0,False,Green,|
-22:00,0:00,0,False,Green,|
+22:00,23:59,0,False,Green,|
 0:00,0:00,2,False,DarkGoldenrod,下班未打卡")]
         public string TimeTypes {
             get {
@@ -160,7 +160,7 @@ namespace WpfApp1.Properties {
 10:00,12:00,2,True,Firebrick,|
 12:00,18:00,0,True,Firebrick,|
 18:00,22:00,0,False,Green,|
-22:00,0:00,0,False,Green,|
+22:00,23:59,0,False,Green,|
 0:00,0:00,2,False,DarkGoldenrod,下班未打卡")]
         public string OrgTimeTypes {
             get {
@@ -173,13 +173,37 @@ namespace WpfApp1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("22:00,1.00:00,10:00,LightGreen|1.00:00,1.9:00,13:30,LightCoral")]
+        [global::System.Configuration.DefaultSettingValueAttribute("22:00,1.00:00,10:00,LightCoral|1.00:00,1.9:00,13:30,Red")]
         public string TimeReourde {
             get {
                 return ((string)(this["TimeReourde"]));
             }
             set {
                 this["TimeReourde"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("22:00,1.00:00,10:00,LightCoral|1.00:00,1.9:00,13:30,Red")]
+        public string OrgTimeReourde {
+            get {
+                return ((string)(this["OrgTimeReourde"]));
+            }
+            set {
+                this["OrgTimeReourde"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool enableOutTime {
+            get {
+                return ((bool)(this["enableOutTime"]));
+            }
+            set {
+                this["enableOutTime"] = value;
             }
         }
     }
