@@ -34,13 +34,10 @@ namespace WpfApp1 {
             [STAThread]
             static void Main () {
                 try {
-                    // 删除先前的
-                    delLast ();
-
                     UpdateVersion ();
                     App.Main ();
 
-                    // 再试一次
+                    // 删除先前的
                     delLast ();
                 }
                 catch (Exception _e) { MessageBox.Show (_e.Message + "\n"); }

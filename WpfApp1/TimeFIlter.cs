@@ -30,7 +30,14 @@ namespace WpfApp1 {
 
         public override void PreFilter ( Log today, Log last ) {
             if (today.records != null) {
-                if (today.records.Count > 0 && today.records[0].TotalHours > 0) today.time_in = today.records[0].ToString (@"hh\:mm");
+                TimeSpan tout;
+                TimeSpan.TryParse (Properties.Settings.Default.OutTime, out tout);
+                if (today.records.Count > 0 && today.records[0].TotalHours > 0) {
+                    if (today.records[0] < tout)
+                        today.time_in = today.records[0].ToString (@"hh\:mm");
+                    else
+                        today.time_out = today.records[0].ToString (@"hh\:mm");
+                }
                 if (today.records.Count > 1 && today.records[today.records.Count - 1].TotalHours > 0) today.time_out = today.records[today.records.Count - 1].ToString (@"hh\:mm");
             }
         }
@@ -118,7 +125,7 @@ namespace WpfApp1 {
             }
 
             // 加班到第二天
-            if (today.time_out.valid() || next == null || next.records == null) goto _reorder_end_;
+            if (today.time_out.valid () || next == null || next.records == null) goto _reorder_end_;
             for (int i = 0; i < next.records.Count; i++) {
                 var nxt = new TimeSpan (1, next.records[i].Hours, next.records[i].Minutes, next.records[i].Seconds);
                 foreach (var tc in Config.timeReorder) {
