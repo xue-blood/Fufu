@@ -4,3 +4,11 @@ obj/
 
 *.lnk
 *.zip
+*.dll
+
+CSharp70Support/
+CSharp vNext Support/
+Library/
+
+*.db
+*UnityVS*
