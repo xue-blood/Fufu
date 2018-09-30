@@ -43,9 +43,9 @@ public class MainWindow : MonoBehaviour {
             List<string> day = new List<string> ();
             int max = yearDd.value == 0 && mouthDd.value == 0 ? DateTime.Now.Day : DateTime.DaysInMonth (y, m);
             for (int i = 1; i <= max; i++) {
-                var d = new DateTime (y, m, i);
+                var d = new DateTime (y, m, Mathf.Min (i, max));
                 i += 7 - (int)d.DayOfWeek;
-                var n = new DateTime (y, m, i);
+                var n = new DateTime (y, m, Mathf.Min (i, max));
                 day.Add (d.Day.ToString () + "~" + Mathf.Min (i, max).ToString () + "日");
             }
             day.Reverse ();
@@ -89,7 +89,9 @@ public class MainWindow : MonoBehaviour {
         });
         weekbtn.onClick.AddListener (() => {
             dayDd.value = 0;
-            getLog (false, false);
+            yearDd.value = 0;
+            mouthDd.value = 0;
+            getLog (false, false, true);
         });
         autoNowday.onValueChanged.AddListener (( b ) => {
             if (b) StartCoroutine (autoGetNowDay ());
@@ -100,8 +102,7 @@ public class MainWindow : MonoBehaviour {
     }
 
     Coroutine timeOutCo;
-    Coroutine workCo;
-    void getLog ( bool now, bool mouth = true ) {
+    void getLog ( bool now, bool mouth = true, bool week = false ) {
 
         nowbtn.interactable = false;
         yearDd.interactable = false;
@@ -113,16 +114,18 @@ public class MainWindow : MonoBehaviour {
             yearDd.value = 0;
             mouthDd.value = mouthDd.options.Count - DateTime.Now.Month;
             dayDd.value = 0;
-            vm.SelectDate = DateTime.Now;
+            vm.getMonthLog (DateTime.Now.Year, DateTime.Now.Month);
         }
         else {
             if (mouth)
-                vm.SelectDate = new DateTime (DateTime.Now.Year - yearDd.value, mouthDd.options.Count - mouthDd.value, 1);
+                vm.getMonthLog (DateTime.Now.Year - yearDd.value, mouthDd.options.Count - mouthDd.value);
+            else if (week)
+                vm.getLogAsync (DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.getLastMonday (), DateTime.Now.Day);
             else {
                 var str = dayDd.options[dayDd.value].text.Split ('~');
                 int sta = str[0].ToInt ();
                 int end = str[1].Substring (0, str[1].Length - 1).ToInt ();
-                workCo = StartCoroutine (vm.getLog (DateTime.Now.Year - yearDd.value, mouthDd.options.Count - mouthDd.value, sta, end));
+                vm.getLogAsync (DateTime.Now.Year - yearDd.value, mouthDd.options.Count - mouthDd.value, sta, end);
             }
         }
 
@@ -134,14 +137,17 @@ public class MainWindow : MonoBehaviour {
         MessageLine.Show ("请求超时");
         mouthDd.interactable = true;
         yearDd.interactable = true;
+        dayDd.interactable = true;
         nowbtn.interactable = true;
+        weekbtn.interactable = true;
     }
     IEnumerator autoGetNowDay () {
         while (true) {
             var str = dayDd.options[dayDd.value].text.Split ('~');
             int sta = str[0].ToInt ();
             int end = str[1].Substring (0, str[1].Length - 1).ToInt ();
-            StartCoroutine (vm.getLog (DateTime.Now.Year - yearDd.value, mouthDd.options.Count - mouthDd.value, sta, end));
+            vm.getLogAsync (DateTime.Now.Year - yearDd.value, mouthDd.options.Count - mouthDd.value, sta, end, true);
+            logList[0].updateAnime ();
             yield return new WaitForSeconds (autoInterval);
         }
     }

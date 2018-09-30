@@ -62,7 +62,7 @@ public static class Extension {
     public static bool IsNowMonth ( this DateTime date ) { return date.IsSameMonth (DateTime.Now); }
     public static bool IsSameDay ( this DateTime date, DateTime other ) { return date.Year == other.Year && date.DayOfYear == other.DayOfYear; }
     public static bool IsSameMonth ( this DateTime date, DateTime other ) { return date.Year == other.Year && date.Month == other.Month; }
-
+    public static int getLastMonday ( this DateTime date ) { return date.Day - ((int)date.DayOfWeek - 1 + 7) % 7; }
     public static string ToString ( this TimeSpan ts, string fmt ) {
         return ts.ToString ();
     }

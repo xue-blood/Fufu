@@ -30,4 +30,13 @@ public class logItem : MonoBehaviour {
         inbg.color = log.type_in == TimeType.Color ? ic : (log.needShow () ? normalbg : gray);
         outbg.color = log.type_out == TimeType.Color ? oc : (log.needShow () ? normalbg : gray);
     }
+
+    public void updateAnime () {
+        iTween.ValueTo (gameObject, iTween.Hash ("delay", .5f, "from", 60.0f, "to", 0, "onupdatetarget", gameObject,
+            "onupdate", "doupdateAnime", "easetype", iTween.EaseType.linear, "time", 0.25f));
+    }
+
+    void doupdateAnime ( float value ) {
+        transform.rotation = Quaternion.Euler (value, 0, 0);
+    }
 }

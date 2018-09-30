@@ -13,15 +13,6 @@ namespace WpfApp1 {
         public List<Log> Logs { get { return logs; } set { logs = value; RaisePropertyChanged (); } }
         private List<Log> logs = new List<Log> ();
 
-        public Command GetLogCmd { get { return getLogCmd ?? (getLogCmd = new Command { CanExecuteDelegate = _ => !inwork, ExecuteDelegate = _ => SelectDate = DateTime.Now }); } }
-        private Command getLogCmd;
-
-        public Command SettingCmd { get { return settingCmd ?? (settingCmd = new Command ()); } }
-        private Command settingCmd;
-
-        public DateTime SelectDate { get { return selectDate; } set { selectDate = value; RaisePropertyChanged (); getSelectLogAsync (); } }
-        private DateTime selectDate = DateTime.Now;
-
         public int TotalDay { get { return totalDay; } set { totalDay = value; RaisePropertyChanged (); } }
         private int totalDay;
 
@@ -40,12 +31,25 @@ namespace WpfApp1 {
             new ReOrderFilter(),
         };
 
-        public IEnumerator getLog ( int y, int m, int dayStart, int dayEnd ) {
-            getLogAsync (y, m, dayStart, dayEnd);
-            yield return null;
+        public async Task getLogAsync ( int y, int m, int dayStart, int dayEnd, bool onlyFirst = false ) {
+            if (Logs.Count == 0 || !onlyFirst) {
+                getLogAsync (y, m, dayStart, dayEnd);
+            }
+            else {
+                var log = await getLogAsync (Logs[0]._date);
+                if (log != null) {
+                    Logs.RemoveAt (0);
+                    Logs.Insert (0, log);
+                    RaisePropertyChanged ("Logs_End");
+                }
+            }
         }
 
-        async Task getLogAsync ( int year, int month, int dayStart = 0, int dayEnd = 0 ) {
+        public void getMonthLog ( int y, int m ) {
+            getLogAsync (y, m);
+        }
+
+        async Task getLogAsync ( int year, int month, int dayStart = 1, int dayEnd = 0 ) {
             if (string.IsNullOrEmpty (Name) || string.IsNullOrEmpty (Password))
                 goto _end_;
 
@@ -62,16 +66,8 @@ namespace WpfApp1 {
                 // 开始为0，取整月
                 if (dayEnd == 0) dayEnd = DateTime.DaysInMonth (year, month);
                 for (int i = dayEnd; i >= dayStart; i--) {
-                    var d = new DateTime (year, month, i);
-                    var log = await Fufu.getLogAsync (d);
-                    if (log == null)
-                        continue;
-
-                    // 预处理
-                    foreach (var f in filters) f.PreFilter (log, Logs.Count > 0 ? Logs[Logs.Count - 1] : null);
-
-                    // 后处理
-                    foreach (var f in filters) { f.Filter (log); }
+                    var log = await getLogAsync (new DateTime (year, month, i));
+                    if (log == null) continue;
 
                     if (Logs.Count > 0) {
                         var l = Logs[Logs.Count - 1];
@@ -82,7 +78,7 @@ namespace WpfApp1 {
                     RaisePropertyChanged ("Logs");
 
                     // 统计
-                    if (log.week_code != 0 && log.week_code != 6 && !d.IsNowDay ()) {
+                    if (log.week_code != 0 && log.week_code != 6 && !log._date.IsNowDay ()) {
                         TotalDay++;
                         FinishDay += (log.type_in == TimeType.Normal && log.type_out == TimeType.Normal) ? 1 : 0;
                     }
@@ -101,8 +97,14 @@ namespace WpfApp1 {
             RaisePropertyChanged ("Logs_End");
         }
 
-        async Task getSelectLogAsync () {
-            await getLogAsync (DateTime.Now.Year, DateTime.Now.Month, 1, SelectDate.IsNowMonth () ? DateTime.Now.Day : 0);
+        async Task<Log> getLogAsync ( DateTime dt ) {
+            var log = await Fufu.getLogAsync (dt);
+            if (log == null) return null;
+            // 预处理
+            foreach (var f in filters) f.PreFilter (log, Logs.Count > 0 ? Logs[Logs.Count - 1] : null);
+            // 后处理
+            foreach (var f in filters) { f.Filter (log); }
+            return log;
         }
 
         public MainViewModel () {
