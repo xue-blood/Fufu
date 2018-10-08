@@ -59,6 +59,9 @@ public class UpdateCtrl : OpenWeb {
 
 
         }
+
+        yield return new WaitForSeconds (60);
+        url = "";
     }
 
 

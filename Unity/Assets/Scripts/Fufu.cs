@@ -117,6 +117,10 @@ public class Fufu {
                 log.records.Add (a);
                 log.records.Add (b);
             }
+            else {
+                // 尝试第二种方法
+                return await getLogAsync2 (_date);
+            }
         }
         else {
             // 尝试第二种方法

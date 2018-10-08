@@ -1,6 +1,6 @@
 {
     "android":{
-        "version":"v1.0.1",
+        "version":"v1.0.2",
         "url":["http://192.168.10.2/fufu.apk","http://doolb.ml/down/fufu.apk","https://github.com/xue-blood/Fufu/releases/download/v3.0/fufu.apk"]
     }
 }

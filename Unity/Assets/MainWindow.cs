@@ -114,7 +114,7 @@ public class MainWindow : MonoBehaviour {
             yearDd.value = 0;
             mouthDd.value = mouthDd.options.Count - DateTime.Now.Month;
             dayDd.value = 0;
-            vm.getMonthLog (DateTime.Now.Year, DateTime.Now.Month);
+            vm.getLogAsync (DateTime.Now.Year, DateTime.Now.Month, 1, DateTime.Now.Day);
         }
         else {
             if (mouth)
