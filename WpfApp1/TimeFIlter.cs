@@ -87,6 +87,10 @@ namespace WpfApp1 {
                 if (log.color_in == null) log.color_in = "white";
                 if (log.color_out == null) log.color_out = "white";
             }
+            else {
+                log.color_in = "green";
+                log.color_out = "green";
+            }
         }
     }
 
