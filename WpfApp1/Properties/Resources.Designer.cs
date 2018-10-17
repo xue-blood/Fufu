@@ -131,7 +131,7 @@ namespace WpfApp1.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to v2.0.3.
+        ///   Looks up a localized string similar to v2.0.4.
         /// </summary>
         public static string Version {
             get {

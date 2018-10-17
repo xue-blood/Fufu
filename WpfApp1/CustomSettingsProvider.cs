@@ -148,6 +148,7 @@ namespace WpfApp1 {
             config.Add (userSettings);
             doc.Add (config);
             doc.Declaration = declaration;
+            Directory.CreateDirectory (Path.GetDirectoryName (UserConfigPath));
             doc.Save (UserConfigPath);
         }
 

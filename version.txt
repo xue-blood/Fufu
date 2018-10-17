@@ -1,1 +1,1 @@
-v2.0.3|新增加班调休，自动更新功能|https://github.com/xue-blood/Fufu/releases/download/v2.0.1/WpfApp1.exe
+v2.0.4|修复第一次运行程序失败|https://github.com/xue-blood/Fufu/releases/download/v2.0.1/WpfApp1.exe
